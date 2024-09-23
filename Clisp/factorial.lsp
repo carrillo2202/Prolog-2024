@@ -11,3 +11,9 @@
   ))
 
 
+(defun division (n m )
+    (if ( < n m)
+    0
+    (+ 1 (division (- n m) m)) 
+    )
+)
