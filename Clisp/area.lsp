@@ -9,6 +9,25 @@
     (setq a (read))
     (setq b (* a a a))
     (format t "El volumen del cubo es: ~a~%" b)) 
+
+(defun areaRectangulo()
+    (princ "Dame el primer lado")
+    (setq a (read))
+    (princ "Dame el segundo lado")
+    (setq b (read))
     
+    (setq c (* a b))
+    (format t "El area del rectangulo es: ~a~%" c)
+)
     
+(defun volumenParalelepipedo()
+    (princ "Dame la base")
+    (setq a (read))
+    (princ "Dame la altura")
+    (setq b (read))
+    (princ "Dame el ancho")
+    (setq c (read))
     
+    (setq d (* a b c))
+    (format t "El area del Paralelepipedo es: ~a~%" d)
+)
