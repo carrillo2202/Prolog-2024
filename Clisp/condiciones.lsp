@@ -17,6 +17,15 @@
     (princ "Es menor de edad"))
 )
 
+(defun edadUnlesss()
+    (princ "Dame tu edad ")
+    (setq a (read))
+    (unless (> a 17)
+    (princ "Es menor de edad"))
+    (unless (< a 17)
+    (princ "Es mayor de edad"))
+)
+
 
 ;Escribir un programa que pida un numero entero y muestre si es par o impar, eql se puede usar
 (defun parImpar()
@@ -29,3 +38,8 @@
 )
 
 ;Hacer el recorrido de descabechamiento de una lista, no se lleva mas de 4 lineas
+
+(defun descabechar (lst)
+  (when lst
+    (print lst)
+    (descabechar (cdr lst))))
