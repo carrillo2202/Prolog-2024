@@ -1,58 +1,55 @@
 (defun recorre (lista) 
     (when lista 
         (let ((elemento (car lista)))
-            (format t "¿Tu personaje es -a?-%" (car elemento)) 
-         ;   (format t "Atributos: -a-%" (cadr elemento)) 
-         (recorre (cdr lista))
+        (format t "¿Tu personaje es -a?-%" (car elemento)) 
+        (setq a (read))
+        (if (string-equal a "si")
+            (progn
+                (setq b (cadr (assoc (car elemento) lista)))
+                (recorre b)
+            )
+        (recorre (cdr lista))
+        )
         )
     )
 )
 
-
-
-
-
 (defparameter *nodes* '(
-    (hombre
-        (Brian_O'Conner ( Brian O'Conner))
-        (Deckard_Shaw ( Deckard Shaw))
-        (Dominic_Toretto ( Dominic Toretto))
-        (Han_Lue ( Han Lue))
-        (Luke_Hobbs ( Luke Hobbs))
-        (Roman_Pearce ( Roman Pearce))
-        (Sean_Boswell ( Sean Boswell))
-        (Tej_Parker ( Tej Parker))
-        (Rico_Santos ( Rico Santos))
+    (Sedan
+        (Toyota (Camry))
+        (Honda (Civic ))
+        (Mazda (tres ))
+        (Nissan (Versa ))
+        (Chevrolet (Civic ))
+      
     )
-    (mujer
-        (Cipher ( Cipher))
-        (Elena_Neves ( Elena Neves))
-        (Gisele_Yashar ( Gisele Yashar))
-        (Letty_Ortiz ( Letty Ortiz))
-        (Megan_Ramsey ( Megan Ramsey))
-        (Mia_Toretto ( Mia Toretto))
+    (SUV
+        (Toyota (Rav 4))
+        (Honda (CRV ))
+        (Mazda (CX-90 ))
+        (Nissan (X-trail ))
+        (Chevrolet (Blazer ))
+       
     )
-    (villano
-        (Cipher ( Cipher))
-        (Deckard_Shaw ( Deckard Shaw))
+    (Pickup
+        (Toyota (Tacoma))
+        (Honda (Ridgeline ))
+        (Mazda (BT-50 ))
+        (Nissan (Frontier ))
+        (Chevrolet (S10 ))
     )
-    (negro
-        (Roman_Pearce ( Roman Pearce))
-        (Tej_Parker ( Tej Parker))
+    (Deportivo
+        (Toyota (GT86))
+        (Honda (CivicType R ))
+        (Mazda (MX-5 ))
+        (Nissan (GTR ))
+        (Chevrolet (Camaro ))
     )
-    (aliado
-        (Brian_O'Conner ( Brian O'Conner))
-        (Dominic_Toretto ( Dominic Toretto))
-        (Elena_Neves ( Elena Neves))
-        (Gisele_Yashar ( Gisele Yashar))
-        (Han_Lue (Han Lue))
-        (Letty_Ortiz ( Letty Ortiz))
-        (Luke_Hobbs ( Luke Hobbs))
-        (Megan_Ramsey ( Megan Ramsey))
-        (Mia_Toretto ( Mia Toretto))
-        (Rico_Santos ( Rico Santos))
-        (Roman_Pearce ( Roman Pearce))
-        (Sean_Boswell ( Sean Boswell))
-        (Tej_Parker ( Tej Parker))
+    (Hatchback
+       (Toyota (Yaris))
+        (Honda (City ))
+        (Mazda (dos ))
+        (Nissan (March ))
+        (Chevrolet (Aveo ))
     )
 ))
