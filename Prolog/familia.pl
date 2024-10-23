@@ -7,14 +7,18 @@ mujer(paola).
 mujer(blanca).
 mujer(karina).
 mujer(valeria).
+mujer(yocelyn).
 
 padre(francisco, francisco_jr).
 padre(francisco, brayan).
 padre(gumercindo, paola).
 padre(gumercindo, karina).
+padre(edy, valeria).
+padre(edy, yocelyn).
 madre(paola, francisco_jr).
 madre(paola, brayan).
 madre(karina, valeria).
+madre(karina, yocelyn).
 madre(blanca, paola).
 madre(blanca, karina).
 
