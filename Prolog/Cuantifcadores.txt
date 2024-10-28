@@ -1,0 +1,53 @@
+-La Tierra es un planeta
+
+Variable individual: t
+Propiedad: Ser un planeta P Pt
+
+-La luna no es un planeta
+Variable individual: l
+Propiedad: Ser un planeta P ¬Pl
+
+-La luna es un satelite
+Variable individual: l
+Propiedad: Ser un satelite S Sl
+
+-La Tierra gira alrededor del Sol
+Variable individual: s
+
+Propiedad: Girar G Gts
+
+-Todo planeta es un satelite
+    ∀pSp
+
+-Todo planeta gira alrededor del sol
+    ∀pGs
+
+-Algun planeta gira alredor de la luna
+    ∃PGl
+
+-Hay por lo menos un satelite
+    ∃S
+
+-Todos los perros del vecindario muerden a algun carteros
+Varuable cartero : c
+Propiedad muerden : M
+    ∀xMpc
+
+-Hay un cartero al que lo muerden todos los perros
+    ∃c∀pMxp
+
+-Todos los carteros son mordidos por algun perros
+    ∀c∃pMcp
+
+-Hay un perro que muerde a todos los carteros
+    ∃p∀Mpc
+
+-Todos los perros que asiustan a algun carterp, lo muerden
+Propiedad asustan : W
+    ∀p∃Wpc^Mpc
+
+-Hay un perro que muerde a todos los perros que muerden a algun cartero
+    ∃Mp∀Mpx
+
+-Hay un solo perro que se muerde a si mismo
+    !∃Mp^p
