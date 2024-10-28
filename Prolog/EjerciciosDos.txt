@@ -1,0 +1,21 @@
+1.- Existe una persona en la feria tal que si dicha persona paga, entonces todas las personas pagan.
+
+
+2.- Spcrates es un hombre. Los hombres son mortales. Luego, Socrates es mortal.
+
+
+3.- Hay estudiantes inteligentes y hay estudiantes trabjadores. Por tanto, hay estudiantes inteligentes
+y trabjadores.
+
+
+4.- En cierto pais oriental se ha celebrado la fase final del campeonato mundial de futbol.
+    Cierto diario deportivo ha publicado las siguientes estadisticas de tan magno acontecimiento:
+    -A todos los porteros que no vistieron camiseta negra les marco un gol algun delantero europeo.
+    -Algún portero jugó con botas blancas y solo le marcaron gole jugadores con botas blancas.
+    - Ningún portero se marcó un gol así mismo.
+    - Ningún jugador con botas blancas vistió camiseta negra.
+    - Por tanto, algún delantero europero jugó con botas blancas.
+5- Socrates era el maestro de Platón. Socrates tuvo a lo sumo un discipulo. Aristoteles fue discipulo de alguien cuyo maestro fue Socrates
+Por consiguiente, Platón fue el maestro de Aristoteles.
+
+

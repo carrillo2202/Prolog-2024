@@ -1,53 +1,75 @@
 -La Tierra es un planeta
 
 Variable individual: t
-Propiedad: Ser un planeta P Pt
+Propiedad: Ser un planeta P Planeta(tierra)
 
 -La luna no es un planeta
 Variable individual: l
-Propiedad: Ser un planeta P ¬Pl
+Propiedad: Ser un planeta P ¬Planeta(luna)
 
 -La luna es un satelite
 Variable individual: l
-Propiedad: Ser un satelite S Sl
+Propiedad: Ser un satelite S Satelite(luna)
 
 -La Tierra gira alrededor del Sol
 Variable individual: s
 
-Propiedad: Girar G Gts
+Propiedad: Girar Girar Girar(tierra, sol)
 
 -Todo planeta es un satelite
     ∀pSp
+    //corretco
+    ∀x (Planeta(x) -> Satelite(x))
 
 -Todo planeta gira alrededor del sol
     ∀pGs
+    //correcto, es como un if si pasa esto cumple esa propiedad
+    ∀x (Planeta(x) -> GiraAlrededor(x, Sol))
 
 -Algun planeta gira alredor de la luna
     ∃PGl
+    //correcto, el ^ indica que cumple con ambas condiciones
+    ∃x (Planeta(x) ^ GiraAlrededor(x, luna))
 
 -Hay por lo menos un satelite
     ∃S
+    //correcto
+    ∃x (Satelite(x))
 
 -Todos los perros del vecindario muerden a algun carteros
 Varuable cartero : c
 Propiedad muerden : M
     ∀xMpc
+    //correcto
+    ∀x (Perro(x) -> ∃y (Cartero(y) ^ Muerde(x, y)))
 
 -Hay un cartero al que lo muerden todos los perros
     ∃c∀pMxp
+    //correcto
+   ∃y (Cartero(y) ^ ∀x (Perro(x)-> Muerde(x, y)))
 
 -Todos los carteros son mordidos por algun perros
     ∀c∃pMcp
+    //correcto
+    ∀y (Cartero(y) -> ∃x  (Perro(x)^ Muerde(x, y)))
+
 
 -Hay un perro que muerde a todos los carteros
     ∃p∀Mpc
+    //correcto
+    ∃x (Perro(x) ^ ∀y (Cartero(y) -> Muerde(x, y)))
+
 
 -Todos los perros que asiustan a algun carterp, lo muerden
 Propiedad asustan : W
     ∀p∃Wpc^Mpc
+    //correcto
+    ∀x ∀y ((Perro(x) ^ Cartero(y) ^ Asusta(x,x))-> Muerde(x,y))      
 
 -Hay un perro que muerde a todos los perros que muerden a algun cartero
     ∃Mp∀Mpx
+     //correcto
+    ∃x (Perro(x) ^ ∀y ((Perro(y) ^ ∃z (Cartero(z) ^ Muerde(y,z)) -> Muerde(x,y) )))
 
 -Hay un solo perro que se muerde a si mismo
     !∃Mp^p
