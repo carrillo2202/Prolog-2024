@@ -1,0 +1,72 @@
+                      ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                       TEMA: BIBLIOTECA Y LIBROS
+
+                                 likcos
+                      ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Table of Contents
+─────────────────
+
+
+
+
+• Actividad: Formalizar los siguiente enunciados y generar los posibles
+  hechos y reglas en Prolog
+
+1. La Biblioteca Nacional tiene el libro "Don Quijote de la Mancha".
+    Tiene(bibliotecaNacional, donQuijoteDeLaMancha)
+
+2. Todos los libros en la Biblioteca Nacional están catalogados.
+    ∀x (Libro(x) -> Catalogado(bibliotecaNacional, x))
+
+3. Existen libros que están en más de una biblioteca.
+    ∃x(Libro(x) -> Esta(x,biblioteca))
+
+4. Si un libro es raro, entonces no se puede prestar.
+    ∀x ((Libro(x) ^ Raro(x) )-> ¬Prestar(x))      
+
+5. La Biblioteca Central tiene más de 10,000 libros.
+    Tiene(bibliotecacentral, ∃x(Libro(x) ^ Cantidad(10000)))
+
+6. Todos los autores tienen al menos un libro en una biblioteca.
+     ∀x (Autor(x)  -> (∃y(Libro(y) -> Estan(y,biblioteca))))
+
+7. Existe un autor que tiene más de 5 libros publicados.
+     ∃x(Autor(x) -> Tiene(x,∃y(Libro(y) ^ Publicado(y) ^ Cantidad(5))) )
+
+8. No todos los libros de la biblioteca están en buen estado.
+    ∃x (Libro(x) ->)
+
+9. Si un libro está en buen estado, puede ser prestado.
+    !∃x (Libro(x) ^ Buenestado(x) -> Prestado(x))
+
+10. Todos los usuarios registrados pueden tomar prestado un libro.
+    ∀x ∃y ((Usuario(x) ^ Registrado(x) )-> Prestamo(x,Libro(y)))
+
+11. Existen libros que solo se pueden consultar en la biblioteca.
+
+12. Todo libro prestado debe ser devuelto en 15 días.
+    ∀x (Libro(x) ^ Prestado(x) -> Devuelto(15))
+
+13. Hay un libro que nadie ha pedido en préstamo.
+
+14. Si un usuario tiene una multa, no puede pedir un libro prestado.
+    !∃x ∃y ((Usuario(x) ^ Multa(x) )-> ¬Prestamo(x,Libro(y)))
+
+15. Todos los libros escritos por un mismo autor están en la misma
+    sección.
+
+16. Existe un libro que tiene más de un ejemplar en la biblioteca.
+
+17. Todo usuario con más de tres préstamos debe devolver uno para pedir
+    otro.
+
+18. Hay una sección de la biblioteca donde todos los libros son de
+    ciencias.
+
+19. No todos los libros en la biblioteca tienen más de 100 páginas.
+
+20. Existe un usuario que ha tomado prestados todos los libros de la
+    sección infantil.
+

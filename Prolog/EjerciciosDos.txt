@@ -1,5 +1,5 @@
 1.- Existe una persona en la feria tal que si dicha persona paga, entonces todas las personas pagan.
-
+    ∃x (Persona(x)
 
 2.- Spcrates es un hombre. Los hombres son mortales. Luego, Socrates es mortal.
 
