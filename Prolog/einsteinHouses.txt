@@ -1,0 +1,20 @@
+En una calle hay 5 casas pintadas de cinco colores diferentes.
+En cada casa vive una persona de diferente nacionalidad.
+Estos cinco propietarios beben un determinado tipo de bebida, fuman una determinada marca de cigarros y tienen una determinada mascota.
+Ningún dueño tiene la misma mascota, fuma la misma marca de cigarro ni bebe la misma bebida.
+
+El británico vive en la casa roja.
+El sueco tiene perros como mascotas
+El danés bebe té
+La casa verde está a la izquierda de la casa blanca.
+La persona que fuma Pall Malls cría pájaros
+El dueño de la casa amarilla fuma Dunhill
+El dueño de la casa verde toma café.
+El hombre que vive en la casa del centro bebe leche.
+El noruego vive en la primera casa (la de más a la izquierda)
+El hombre que fuma Blends vive al lado del que tiene gatos
+El hombre que cuida caballos vive al lado del hombre que fuma Dunhill
+El dueño que fuma BlueMaster bebe cerveza
+El alemán fuma Príncipes
+El noruego vive al lado de la casa azul
+El hombre que fuma Blends tiene un vecino que bebe agua

@@ -1,0 +1,85 @@
+           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            REGLAS PARA PROLOG EN EL CONTEXTO DE BIBLIOTECA
+                                Y LIBROS
+
+                                 likcos
+           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Table of Contents
+─────────────────
+
+
+
+
+1. Si un libro está solo en consulta, ningún usuario puede llevarlo en
+   préstamo.
+   consulta(usuario,libro)
+   solo_consulta(libro).
+   no_prestamo(usuario, libro) :- solo_consulta(libro).
+
+2. Si un usuario tiene tres préstamos y devuelve uno, puede solicitar
+   otro libro en préstamo.
+   prestamo(usuario,libro)  
+    max_prestamos(3).
+    puede_solicitar_mas(usuario) :- cantidad_prestamos(usuario, N), N < max_prestamos.
+
+
+3. Todos los libros de una misma sección deben tener el mismo plazo de
+   devolución.
+
+   misma_seccion(plazo,libro)
+
+4. Si un usuario tiene una multa, no puede renovar sus préstamos
+   actuales.
+    multa(usuario,libro)
+
+5. Los usuarios con más de cinco préstamos activos deben devolver uno
+   antes de pedir otro.
+     devolver(usuario,libro)
+
+
+6. Si un libro tiene más de tres ejemplares, puede estar en varias
+   bibliotecas.
+
+7. Si un autor tiene más de diez libros en una biblioteca, su sección es
+   de obras destacadas.
+   obras_destacadas(autor) :- cantidad_libros(autor, biblioteca, N), N > 10.
+
+8. Si un libro fue solicitado por más de tres usuarios, el plazo de
+   préstamo es menor.
+
+9. Los usuarios con tres o más multas no pueden acceder a libros raros.
+
+10. Si un libro está en buen estado y tiene menos de dos ejemplares, no
+    se puede consultar en sala, solo en préstamo.
+
+11. Todos los usuarios que pidieron en préstamo libros de ciencias deben
+    devolverlos en 10 días.
+
+12. Si una sección de la biblioteca tiene libros en mal estado, la
+    sección está temporalmente cerrada.
+
+13. Si todos los libros de un autor están en préstamo, el autor es
+    considerado popular.
+
+14. Si un usuario ha tomado prestados todos los libros de una sección,
+    se le permite extender el plazo de préstamo.
+
+15. Los libros que han sido prestados más de cinco veces deben someterse
+    a revisión de estado.
+
+16. Si un usuario devuelve un libro en mal estado, se le asigna una
+    multa.
+
+17. Los autores que tienen libros en más de dos bibliotecas son
+    considerados internacionales.
+
+18. Si todos los usuarios de una sección han tomado el mismo libro en
+    préstamo, ese libro es recomendado.
+
+19. Los libros que llevan en la biblioteca más de un año sin ser
+    prestados son considerados para donación.
+
+20. Si un libro es popular y tiene más de tres ejemplares, se coloca en
+    una sección especial de consulta.
