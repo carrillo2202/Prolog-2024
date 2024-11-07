@@ -1,0 +1,49 @@
+Definición de concatenación (append)
+
+        Permite unificar 2 listas en una:
+        append([1,2],[3,4],X)
+        X=[1,2,3,4]
+        o verificar que una lista es la unión de otras 2:
+        append([a,b],[c],[a,b,c])
+        yes
+        Es más útil con los argumentos sin instanciar:
+        append(X,[3,4],[1,2,3,4]).
+        Yes, X=[1,2]
+        append([1,2],Y,[1,2,3,4])
+        Yes, Y=[3,4]
+Unificacion
+
+Member
+
+            Permite saber si un elemento pertenece a una lista:
+        member(1,[5,6,7,8,1,2,3]).
+        yes
+        member(1,[a,b,c])
+        no
+         Si el primer argumento es una variable, podemos listar los
+        elementos de una lista uno a uno, haciendo redo:
+        member(X,[a,b,c]).
+        yes, X=a;
+        yes, X=b;
+        yes, X=c;
+        No
+
+
+Pipe (|) operator:
+    In prolog, lists have got only one operator, called pipe, denoted by |. This operator is used to append an element at the beginning of a list. The syntax of the pipe operator is as follows :
+
+    [a | L]
+    Here L is a list and a is a single element.
+    For example:
+
+    If, L = [b,c,d]
+    Then, [a | L] will result in [a,b,c,d]
+
+Cut(!) operator:
+    In Prolog, the Cut operator, denoted by ! is a goal that always succeeds but cannot be backtracked. For example, consider the following program to find the max element between 2 numbers:
+
+    max_element(X, Y, X) :- X > Y.    % If X > Y, then X is the max element
+    max_element(X, Y, Y) :- X =< Y.    % If X <= Y, then Y is the max element
+    Here if we provide the goal as:
+
+    ?- max_element(5, 2, Ans).
