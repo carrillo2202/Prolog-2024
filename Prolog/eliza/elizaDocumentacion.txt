@@ -25,3 +25,21 @@ eliza(Input):- Input == ['Adios'],
 y luego realiza el mismo procedimiento
 eliza(Input):- Input == ['Adios', '.'],
 	writeln('Adios. espero poder verte ayudado.'), !.
+
+
+---Esta clausula maneja las respuestas del chatbot , usando templates
+En este caso la primera: tempalte(Stim, Resp, IndStim) consulta una base de datos de plantillas (definida en otra parte del código)
+ y recupera una lista de palabra, y una de indices 
+
+eliza(Input) :-
+	template(Stim, Resp, IndStim),
+	match(Stim, Input),
+	% si he llegado aquí es que he
+	% hallado el template correcto:
+	replace0(IndStim, Input, 0, Resp, R),
+	writeln(R),
+	readln(Input1),
+	eliza(Input1), !.
+
+--Basicamente genera una respuesta personalizada usando los valores de Input y escriba la respuesta en la consola.
+Lee una nueva entrada y continúe la conversación recursivamente.

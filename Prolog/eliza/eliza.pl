@@ -43,6 +43,11 @@ template([eres, s(_), '?'], [flagIs], [2]).
 
 template([como, estas, tu, '?'], [yo, estoy, bien, ',', gracias, por, preguntar, '.'], []).
 
+% Nuevas reglas
+template([alguna, vez, has, _], [no, pero, me, gustaria, algun, dia], []).
+template([alguna, vez, has, _], [no, pero, me, gustaria, algun, dia], []).
+% terminan nuevas reglas
+
 template([yo, pienso, que, _], [bueno, esa, es, tu, opinion], []).
 template([porque, _], [esa, no, es, una, buena, razon, '.'], []).
 template([i, have, s(_), with, s(_), '.'], ['You', have, to, deal, with, your, 0, and, your, 1, in, a, mature, way, '.'], [2, 4]).
