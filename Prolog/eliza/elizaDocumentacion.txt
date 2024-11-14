@@ -1,0 +1,27 @@
+------------CHAT ELIZA PROLOG--------------------
+
+-La primer linea es una regla  o predicado, y contiene varias instrucciones, la primera es la llamada a 
+la funcion writeln, la cual nos sirve para mandar mensajes a la consola.
+
+    eliza:-	writeln('Hola , mi nombre es  Eliza tu  chatbot,	por favor ingresa tu consulta,
+        usar solo minúsculas sin . al final:'),
+
+-readln nos sirve para leer la entrada de lo que escriva el usuario, Input es una lista, la cual conteien todas 
+las palabras que escriba el usuario
+	readln(Input),
+
+-luego, se hace una llamada al predicado eliza con el Input del usuario. Esto permite al programa analizar la 
+entrada y responder en función de los patrones definidos en el código. Ademas se hace uso del corte con !
+para eliminar los puntos de elección del predicado que lo contiene.
+	eliza(Input),!.
+
+-Se hace una nueva definicion de eliza, donde ahora se le dice que analice la cadena Input, si encuentra
+que la cadena es igual a la cadena 'Adios' , escribe en consola un mensaje de despediday cierra la ejecucion del programa
+y con ! se hace uso del corte para terminar la ejecucion.
+eliza(Input):- Input == ['Adios'],
+	writeln('Adios. espero poder verte ayudado.'), !.
+
+- Esta linea hace lo mismo que la anterior, pero ahora es para saber si la cadena que escriba el usuario lleva un punto al final
+y luego realiza el mismo procedimiento
+eliza(Input):- Input == ['Adios', '.'],
+	writeln('Adios. espero poder verte ayudado.'), !.
