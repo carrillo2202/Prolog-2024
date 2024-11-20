@@ -41,6 +41,13 @@ template([tu, eres, s(_), _], [flagDo], [2]).
 template([que, eres, tu, s(_)], [flagIs], [2]).
 template([eres, s(_), '?'], [flagIs], [2]).
 
+	% pregunta sobre sobre datos de eliza
+template([eres, de, s(_), _], [flagWhere], [2]).
+% template([donde, vives,_], [flagWhere], [2]).
+
+template([te, gusta, ver, peliculas, de, s(_)], [flagWatch], [5]).
+template([alguna, vez, has, ido, a, s(_)], [flagVisit], [5]).
+
 template([como, estas, tu, '?'], [yo, estoy, bien, ',', gracias, por, preguntar, '.'], []).
 
 % Nuevas reglas
@@ -86,6 +93,26 @@ is0(fine).
 is0(happy).
 is0(redundant).
 
+% Predicado para responder dónde vive Eliza
+elizaLives(X, R):- livesIn(X), R = ['Yes', yo, vivo, en, X].
+elizaLives(X, R):- \+livesIn(X), R = ['No', yo, no, vivo, en, X].
+livesIn(puruandiro).
+livesIn(nuevaYork).
+livesIn(mexico).
+
+elizaWatch(X, R):- watch(X), R = ['Yes', me ,gustan, las, peliculas, de, X].
+elizaWatch(X, R):- \+watch(X), R = ['No', me ,gustan, las, peliculas, de, X].
+watch(terror).
+watch(anime).
+watch(romance).
+watch(comedia).
+
+elizaVisit(X, R):- visit(X), R = ['Yes', he ido ,a, X].
+elizaVisit(X, R):- \+visit(X), R = ['No', he, ido, a X].
+visit(alemania).
+visit(peru).
+visit(argentina).
+
 match([],[]).
 match([], _):- true.
 
@@ -121,6 +148,28 @@ replace0([I|_], Input, _, Resp, R):-
 	nth0(0, Resp, X),
 	X == flagIs,
 	elizaIs(Atom, R).
+
+% ELiza lives:
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),        
+    nth0(0, Resp, X),  
+	X == flagWhere,
+	elizaLives(Atom, R).      
+
+% Eliza watch
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),        
+    nth0(0, Resp, X),  
+	X == flagWatch,
+	elizaWatch(Atom, R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),        
+    nth0(0, Resp, X),  
+	X == flagVisit,
+	elizaVisit(Atom, R).
+	
 
 replace0([I|Index], Input, N, Resp, R):-
 	length(Index, M), M =:= 0,
