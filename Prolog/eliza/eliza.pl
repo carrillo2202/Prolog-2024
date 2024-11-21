@@ -52,7 +52,12 @@ template([como, estas, tu, '?'], [yo, estoy, bien, ',', gracias, por, preguntar,
 
 % Nuevas reglas
 template([alguna, vez, has, _], [no, pero, me, gustaria, algun, dia], []).
-template([alguna, vez, has, _], [no, pero, me, gustaria, algun, dia], []).
+template([te, puedo, preguntar, _], [claro, puedes, preguntar], []).
+template([consideras , importante,  _], [claro, es, de, suma, importancia], []).
+template([como, te, llamas,  _], [mucho, gusto, mi, nombre, es, eliza], []).
+template([cual , es, tu, edad,  _], [no, tengo, una, edad, existo, desde, siempre], []).
+
+template([eres , un, ser, humano,  _], [no, fisicamente, pero, lo, intento], []).
 % terminan nuevas reglas
 
 template([yo, pienso, que, _], [bueno, esa, es, tu, opinion], []).
@@ -107,8 +112,8 @@ watch(anime).
 watch(romance).
 watch(comedia).
 
-elizaVisit(X, R):- visit(X), R = ['Yes', he ido ,a, X].
-elizaVisit(X, R):- \+visit(X), R = ['No', he, ido, a X].
+elizaVisit(X, R):- visit(X), R = ['Yes', he,ido ,a, X].
+elizaVisit(X, R):- \+visit(X), R = ['No', he, ido, a, X].
 visit(alemania).
 visit(peru).
 visit(argentina).
