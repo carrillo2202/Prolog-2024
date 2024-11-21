@@ -73,3 +73,5 @@ Propiedad asustan : W
 
 -Hay un solo perro que se muerde a si mismo
     !∃Mp^p
+    //correct
+     ∃x (Perro(x) ^ Muerde(x,x) ^  ∀y ((Perro(y) ^ Muerde(y,y)) ¬ x = y))
