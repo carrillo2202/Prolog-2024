@@ -1,21 +1,43 @@
 1.- Existe una persona en la feria tal que si dicha persona paga, entonces todas las personas pagan.
-    ∃x (Persona(x)
+    ∃x(Persona(x)∧(Paga(x)→∀y(Persona(y)→Paga(y))))
 
 2.- Spcrates es un hombre. Los hombres son mortales. Luego, Socrates es mortal.
+    Hombre(Socrates)
+    ∀x(Hombre(x)→Mortal(x))
+    ∴Mortal(Socrates)
 
 
 3.- Hay estudiantes inteligentes y hay estudiantes trabjadores. Por tanto, hay estudiantes inteligentes
 y trabjadores.
+    ∃x(Estudiante(x)∧Inteligente(x))
+    ∃y(Estudiante(y)∧Trabajador(y))
+    ∴∃z(Estudiante(z)∧Inteligente(z)∧Trabajador(z))
+
 
 
 4.- En cierto pais oriental se ha celebrado la fase final del campeonato mundial de futbol.
     Cierto diario deportivo ha publicado las siguientes estadisticas de tan magno acontecimiento:
     -A todos los porteros que no vistieron camiseta negra les marco un gol algun delantero europeo.
+    ∀p(Portero(p)∧¬CamisaNegra(p)→∃d(Delantero(d)∧Europeo(d)∧MarcaGol(d,p)))
+
     -Algún portero jugó con botas blancas y solo le marcaron gole jugadores con botas blancas.
+    ∃p(Portero(p)∧BotasBlancas(p)∧∀d(MarcaGol(d,p)→BotasBlancas(d)))
+
     - Ningún portero se marcó un gol así mismo.
+    ∀p(Portero(p)→¬AutoGol(p))
+
     - Ningún jugador con botas blancas vistió camiseta negra.
+   ∀x(BotasBlancas(x)→¬CamisaNegra(x))
+
     - Por tanto, algún delantero europero jugó con botas blancas.
+    ∴∃d(Delantero(d)∧Europeo(d)∧BotasBlancas(d))
+
 5- Socrates era el maestro de Platón. Socrates tuvo a lo sumo un discipulo. Aristoteles fue discipulo de alguien cuyo maestro fue Socrates
 Por consiguiente, Platón fue el maestro de Aristoteles.
+Maestro(Socrates,Platon)
+∀x(Discipulo(x,Socrates)→x=Platon)
+∃y(Discipulo(Aristoteles,y)∧Maestro(y,Socrates))
+∴Maestro(Platon,Aristoteles)
+
 
 

@@ -28,19 +28,20 @@ Table of Contents
 3. Todos los libros de una misma sección deben tener el mismo plazo de
    devolución.
 
-   misma_seccion(plazo,libro)
+   mismo_plazo(Plazo, Seccion) :- seccion(Libro1, Seccion), seccion(Libro2, Seccion), plazo(Libro1, Plazo), plazo(Libro2, Plazo).
 
 4. Si un usuario tiene una multa, no puede renovar sus préstamos
    actuales.
-    multa(usuario,libro)
+    no_renovacion(Usuario) :- multa(Usuario).
 
 5. Los usuarios con más de cinco préstamos activos deben devolver uno
    antes de pedir otro.
-     devolver(usuario,libro)
+    devolver(Usuario) :- cantidad_prestamos(Usuario, N), N > 5.
 
 
 6. Si un libro tiene más de tres ejemplares, puede estar en varias
    bibliotecas.
+   varias_bibliotecas(Libro) :- ejemplares(Libro, N), N > 3.
 
 7. Si un autor tiene más de diez libros en una biblioteca, su sección es
    de obras destacadas.
@@ -48,38 +49,59 @@ Table of Contents
 
 8. Si un libro fue solicitado por más de tres usuarios, el plazo de
    préstamo es menor.
+   plazo_menor(Libro) :- solicitudes(Libro, N), N > 3.
 
 9. Los usuarios con tres o más multas no pueden acceder a libros raros.
+    no_acceso_libros_raros(Usuario) :- cantidad_multas(Usuario, N), N >= 3.
 
 10. Si un libro está en buen estado y tiene menos de dos ejemplares, no
     se puede consultar en sala, solo en préstamo.
+    solo_prestamo(Libro) :- buen_estado(Libro), ejemplares(Libro, N), N < 2.
 
 11. Todos los usuarios que pidieron en préstamo libros de ciencias deben
     devolverlos en 10 días.
+    devolucion_ciencias(Usuario, Libro) :- prestamo(Usuario, Libro), seccion(Libro, ciencias), plazo(Libro, 10).
 
 12. Si una sección de la biblioteca tiene libros en mal estado, la
     sección está temporalmente cerrada.
+    cerrada(Seccion) :- seccion(Libro, Seccion), mal_estado(Libro).
+
 
 13. Si todos los libros de un autor están en préstamo, el autor es
     considerado popular.
+    popular(Autor) :- autor(Libro, Autor), forall(autor(Libro, Autor), prestamo(_, Libro)).
+
 
 14. Si un usuario ha tomado prestados todos los libros de una sección,
     se le permite extender el plazo de préstamo.
+    extender_plazo(Usuario) :- seccion(Libro, Seccion), forall(seccion(Libro, Seccion), prestamo(Usuario, Libro)).
+
 
 15. Los libros que han sido prestados más de cinco veces deben someterse
     a revisión de estado.
+    revision_estado(Libro) :- cantidad_prestamos_libro(Libro, N), N > 5.
+
 
 16. Si un usuario devuelve un libro en mal estado, se le asigna una
     multa.
+    multa(Usuario) :- devuelve(Usuario, Libro), mal_estado(Libro).
+
 
 17. Los autores que tienen libros en más de dos bibliotecas son
     considerados internacionales.
+    internacional(Autor) :- cantidad_bibliotecas(Autor, N), N > 2.
+
 
 18. Si todos los usuarios de una sección han tomado el mismo libro en
     préstamo, ese libro es recomendado.
+    recomendado(Libro) :- seccion(Libro, Seccion), forall(usuario_seccion(Usuario, Seccion), prestamo(Usuario, Libro)).
+
 
 19. Los libros que llevan en la biblioteca más de un año sin ser
     prestados son considerados para donación.
+    donacion(Libro) :- en_biblioteca(Libro, Tiempo), Tiempo > 1, \+ prestamo(_, Libro).
+
 
 20. Si un libro es popular y tiene más de tres ejemplares, se coloca en
     una sección especial de consulta.
+    seccion_especial(Libro) :- popular(Libro), ejemplares(Libro, N), N > 3.

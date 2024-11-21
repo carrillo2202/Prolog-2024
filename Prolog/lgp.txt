@@ -15,28 +15,28 @@ Table of Contents
   hechos y reglas en Prolog
 
 1. La Biblioteca Nacional tiene el libro "Don Quijote de la Mancha".
-    Tiene(bibliotecaNacional, donQuijoteDeLaMancha)
+    tiene(bibliotecaNacional, donQuijoteDeLaMancha)
 
 2. Todos los libros en la Biblioteca Nacional están catalogados.
-    ∀x (Libro(x) -> Catalogado(bibliotecaNacional, x))
+    ∀x (Libro(x) -> catalogado(bibliotecaNacional, x))
 
 3. Existen libros que están en más de una biblioteca.
-    ∃x(Libro(x) -> Esta(x,biblioteca))
+    ∃x(Libro(x)∧Esta(x,Biblioteca1)∧Esta(x,Biblioteca2))
 
 4. Si un libro es raro, entonces no se puede prestar.
     ∀x ((Libro(x) ^ Raro(x) )-> ¬Prestar(x))      
 
 5. La Biblioteca Central tiene más de 10,000 libros.
-    Tiene(bibliotecacentral, ∃x(Libro(x) ^ Cantidad(10000)))
+    Cantidad(BibliotecaCentral,∃x(Libro(x)∧total>10000))
 
 6. Todos los autores tienen al menos un libro en una biblioteca.
-     ∀x (Autor(x)  -> (∃y(Libro(y) -> Estan(y,biblioteca))))
+     ∀x(Autor(x)→∃y(Libro(y)∧Esta(y,Biblioteca)))
 
 7. Existe un autor que tiene más de 5 libros publicados.
-     ∃x(Autor(x) -> Tiene(x,∃y(Libro(y) ^ Publicado(y) ^ Cantidad(5))) )
+     ∃x(Autor(x)∧Cantidad(ydonde(Libro(y)∧Publicado(y))>5))
 
 8. No todos los libros de la biblioteca están en buen estado.
-    ∃x (Libro(x) ->)
+   ∃x(Libro(x)∧¬BuenEstado(x))
 
 9. Si un libro está en buen estado, puede ser prestado.
     !∃x (Libro(x) ^ Buenestado(x) -> Prestado(x))
@@ -45,28 +45,36 @@ Table of Contents
     ∀x ∃y ((Usuario(x) ^ Registrado(x) )-> Prestamo(x,Libro(y)))
 
 11. Existen libros que solo se pueden consultar en la biblioteca.
+    ∃x(Libro(x)∧SoloConsulta(x))
 
 12. Todo libro prestado debe ser devuelto en 15 días.
-    ∀x (Libro(x) ^ Prestado(x) -> Devuelto(15))
+    ∀x((Libro(x)∧Prestado(x))→Devuelto(x,15))
 
 13. Hay un libro que nadie ha pedido en préstamo.
+    ∃x(Libro(x)∧¬∃y(Prestamo(y,x)))
 
 14. Si un usuario tiene una multa, no puede pedir un libro prestado.
     !∃x ∃y ((Usuario(x) ^ Multa(x) )-> ¬Prestamo(x,Libro(y)))
 
 15. Todos los libros escritos por un mismo autor están en la misma
     sección.
+    ∀x,y((Libro(x)∧Libro(y)∧AutorDe(A,x)∧AutorDe(A,y))→Seccion(x)=Seccion(y))
 
 16. Existe un libro que tiene más de un ejemplar en la biblioteca.
+    ∃x(Libro(x)∧Ejemplares(x)>1)
 
 17. Todo usuario con más de tres préstamos debe devolver uno para pedir
     otro.
+    ∀x((Usuario(x)∧Cantidad(Prestamos(x))>3)→DebeDevolverUno(x))
 
 18. Hay una sección de la biblioteca donde todos los libros son de
     ciencias.
+    ∃S(Seccion(S)∧∀x(Libro(x)∧SeccionDe(x,S)→Ciencia(x)))
 
 19. No todos los libros en la biblioteca tienen más de 100 páginas.
+    ∃x(Libro(x)∧Paginas(x)≤100)
 
 20. Existe un usuario que ha tomado prestados todos los libros de la
     sección infantil.
+    ∃x(Usuario(x)∧∀y(Libro(y)∧Seccion(y,Infantil)→Prestamo(x,y)))
 
