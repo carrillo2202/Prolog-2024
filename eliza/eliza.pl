@@ -34,6 +34,7 @@ template([yo, soy, s(_),'.'], [porque, eres, tu, 0, '?'], [2]).
 % pregunta algo que le gusta a eliza
 template([te, gustan, las, s(_), _], [flagLike], [3]).
 template([te, gustan, los, s(_), _], [flagLike], [3]).
+template([que, te, gusta, s(_), _], [flagLikesNew], [3]).
 
 		 % pregunta algo que hace eliza
 template([tu, eres, s(_), _], [flagDo], [2]).
@@ -77,7 +78,12 @@ likes(ponies).
 likes(zombies).
 likes(manzanas).
 likes(computadoras).
-like(carros).
+likes(carros).
+
+elizaLikesNew(_, R) :-
+    findall(Gusto, likes(Gusto), Gustos), % Obtiene todos los gustos de la base
+    atomic_list_concat(Gustos, ', ', GustosConcat), % Combina los gustos en una cadena
+    atomic_list_concat(['Me gustan: ', GustosConcat, '.'], '', R). % Genera el mensaje
 
 
 
@@ -139,6 +145,16 @@ replace0([I|_], Input, _, Resp, R):-
 	nth0(0, Resp, X),
 	X == flagLike,
 	elizaLikes(Atom, R).
+
+	
+% Eliza likesNew:
+% Reemplazo en la respuesta
+replace0([], _, _, Resp, Resp).
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, _), % No es relevante el contenido del token aquí
+    Resp = [flagLikesNew | _],
+    elizaLikesNew(_, R), !.
+
 
 % Eliza does:
 replace0([I|_], Input, _, Resp, R):-
