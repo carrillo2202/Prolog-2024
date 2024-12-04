@@ -81,8 +81,8 @@ likes(computadoras).
 likes(carros).
 
 elizaLikesNew(_, R) :-
-    findall(["A Eliza le gusta ", Gusto], likes(Gusto), Results), % Lista todos los gustos con prefijo
-    flatten(Results, R). % Combina las sublistas en una sola lista plana
+    findall(["A Eliza le gusta ", Gusto], likes(Gusto), Results), 
+    flatten(Results, R). 
     
 
 
