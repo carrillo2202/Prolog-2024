@@ -81,10 +81,9 @@ likes(computadoras).
 likes(carros).
 
 elizaLikesNew(_, R) :-
-    findall(Gusto, likes(Gusto), Gustos), % Obtiene todos los gustos de la base
-    atomic_list_concat(Gustos, ', ', GustosConcat), % Combina los gustos en una cadena
-    atomic_list_concat(['Me gustan: ', GustosConcat, '.'], '', R). % Genera el mensaje
-
+    findall(["A Eliza le gusta ", Gusto], likes(Gusto), Results), % Lista todos los gustos con prefijo
+    flatten(Results, R). % Combina las sublistas en una sola lista plana
+    
 
 
 % lo que hace eliza: flagDo
