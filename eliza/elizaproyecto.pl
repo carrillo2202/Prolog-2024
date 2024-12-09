@@ -18,6 +18,32 @@ eliza(Input) :-
 	readln(Input1),
 	eliza(Input1), !.
 
+eliza(Input) :-
+    template(Stim, Resp, IndStim),
+    match(Stim, Input),
+    replace0(IndStim, Input, 0, Resp, R),
+    writeln(R), % Mostrar respuesta correctamente
+    !. % Termina después de procesar una consulta válida
+
+process_input(Input) :-
+    (   
+        % Busca coincidencia en plantillas
+        template(Stim, Resp, IndStim),
+        match(Stim, Input) ->
+        replace0(IndStim, Input, 0, Resp, R),
+        writeln(R)
+    ;
+        % Si no coincide ninguna plantilla
+        writeln('No entiendo tu consulta. Por favor, intenta nuevamente.')
+    ),
+    % Vuelve a leer entrada
+    readln(NewInput),
+    process_input(NewInput).
+
+% Declaraciones discontiguous
+:- discontiguous template/3.
+:- discontiguous replace0/5.
+
 template([hola, mi, nombre, es, s(_), '.'], ['Hola', 0, 'Como', estas, tu, '?'], [4]).
 template([buendia, mi, nombre, es, s(_), '.'], ['buen dia', 'Como', estas, tu, 0, '?'], [4]).
 
@@ -68,7 +94,56 @@ template([i, s(_),  _], [i, can, recommend, you, a, book, about, that, issue], [
 template([please, s(_), _], ['No', i, can, not, help, ',', i, am, just, a, machine], []). 
 		 template([tell, me, a, s(_), _], ['No', i, can, not, ',', i, am, bad, at, that], []).
 
-				  
+% Templates de familia
+template([quien, es, el, padre, de, s(_)], [flagfather], [5]).
+template([quien, es, la, madre, de, s(_)], [flagmother], [5]).
+template([quienes, son, los, hermanos, de, s(_)], [flagsiblings], [5]).
+template([quienes, son, los, primos, de, s(_)], [flagcousins], [5]).
+template(_, ['No entiendo tu consulta. Por favor, intenta nuevamente.'], []).
+
+% Hechos para la familia
+
+% Hechos
+hombre(francisco).
+hombre(francisco_jr).
+hombre(brayan).
+hombre(gumercindo).
+hombre(edy).
+mujer(paola).
+mujer(blanca).
+mujer(karina).
+mujer(valeria).
+mujer(yocelyn).
+
+
+padre(francisco, francisco_jr).
+padre(francisco, brayan).
+padre(gumercindo, paola).
+padre(gumercindo, karina).
+padre(edy, valeria).
+padre(edy, yocelyn).
+madre(paola, francisco_jr).
+madre(paola, brayan).
+madre(karina, valeria).
+madre(karina, yocelyn).
+madre(blanca, paola).
+madre(blanca, karina).
+esposos(francisco, paola).
+esposos(edy, karina).
+
+
+% Reglas
+hermanos(X, Y) :- (padre(Z, X), padre(Z, Y); madre(W, X), madre(W, Y)), X \= Y.
+primos(X, Y) :- padres(A, X), padres(B, Y), hermanos(A, B).
+padres(X, Y) :- padre(X, Y); madre(X, Y).
+
+% Respuestas específicas
+respuesta(flagfather, [S], R) :- padre(R, S).
+respuesta(flagmother, [S], R) :- madre(R, S).
+respuesta(flagsiblings, [S], R) :- findall(X, hermanos(S, X), R).
+respuesta(flagcousins, [S], R) :- findall(X, primos(S, X), R).
+
+
 template(_, ['Please', explain, a, little, more, '.'], []). 
 % Lo que le gusta a eliza : flagLike
 elizaLikes(X, R):- likes(X), R = ['Yeah', i, like, X].
@@ -189,6 +264,63 @@ replace0([I|_], Input, _, Resp, R):-
     nth0(0, Resp, X),  
 	X == flagVisit,
 	elizaVisit(Atom, R).
+
+% Manejo específico para flagfather
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom), % Obtén el nombre de la persona
+    Resp = [flagfather | _], % Verifica que sea la bandera correcta
+    ( padre(Padre, Atom) -> 
+        format(atom(R), 'El padre de ~w es ~w.', [Atom, Padre]) % Respuesta formateada
+    ; 
+        format(atom(R), 'Lo siento, no sé quién es el padre de ~w.', [Atom]) % Caso donde no hay datos
+    ), !.
+
+% Manejo específico para flagmother
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom), % Obtén el nombre de la persona
+    Resp = [flagmother | _], % Verifica que sea la bandera correcta
+    ( madre(Madre, Atom) -> 
+        format(atom(R), 'La madre de ~w es ~w.', [Atom, Madre]) % Respuesta formateada
+    ; 
+        format(atom(R), 'Lo siento, no sé quién es la madre de ~w.', [Atom]) % Caso donde no hay datos
+    ), !.
+
+% Manejo específico para hermanos
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom), % Obtén el nombre de la persona
+    Resp = [flagsiblings | _], % Verifica que sea la bandera correcta
+    findall(Hermano, hermanos(Atom, Hermano), ListaHermanos), % Obtén todos los hermanos
+    ( ListaHermanos \= [] -> 
+        atomic_list_concat(ListaHermanos, ', ', ListaHermanosStr), % Convierte la lista a cadena
+        format(atom(R), 'Los hermanos de ~w son: ~w.', [Atom, ListaHermanosStr]) % Respuesta formateada
+    ; 
+        format(atom(R), 'Lo siento, no sé quiénes son los hermanos de ~w.', [Atom]) % Caso donde no hay datos
+    ), !.
+
+% Manejo específico para primos
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom), % Obtén el nombre de la persona
+    Resp = [flagcousins | _], % Verifica que sea la bandera correcta
+    findall(Primo, primos(Atom, Primo), ListaPrimos), % Obtén todos los primos
+    ( ListaPrimos \= [] -> 
+        atomic_list_concat(ListaPrimos, ', ', ListaPrimosStr), % Convierte la lista a cadena
+        format(atom(R), 'Los primos de ~w son: ~w.', [Atom, ListaPrimosStr]) % Respuesta formateada
+    ; 
+        format(atom(R), 'Lo siento, no sé quiénes son los primos de ~w.', [Atom]) % Caso donde no hay datos
+    ), !.
+
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagmother | _], madre(Atom, R), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagsiblings | _], findall(X, hermanos(Atom, X), R), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagcousins | _], findall(X, primos(Atom, X), R), !.
 	
 
 replace0([I|Index], Input, N, Resp, R):-
@@ -202,3 +334,4 @@ replace0([I|Index], Input, N, Resp, R):-
 	select(N, Resp, Atom, R1),
 	N1 is N + 1,
 	replace0(Index, Input, N1, R1, R),!.
+
