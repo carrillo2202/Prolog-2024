@@ -99,6 +99,11 @@ template([quien, es, el, padre, de, s(_)], [flagfather], [5]).
 template([quien, es, la, madre, de, s(_)], [flagmother], [5]).
 template([quienes, son, los, hermanos, de, s(_)], [flagsiblings], [5]).
 template([quienes, son, los, primos, de, s(_)], [flagcousins], [5]).
+
+template([quiero, encontrar, un, auto], [flagFindAuto], [3]).
+template([Marca, [s(Tipos)]], [flagFindAutoFinal], [0]).
+template([s(Tipos)], [flagFindMarca], [0]).
+
 template(_, ['No entiendo tu consulta. Por favor, intenta nuevamente.'], []).
 
 % Hechos para la familia
@@ -142,6 +147,53 @@ respuesta(flagfather, [S], R) :- padre(R, S).
 respuesta(flagmother, [S], R) :- madre(R, S).
 respuesta(flagsiblings, [S], R) :- findall(X, hermanos(S, X), R).
 respuesta(flagcousins, [S], R) :- findall(X, primos(S, X), R).
+
+% Hechos sobre los autos
+auto(sedan, toyota, camry).
+auto(suv, toyota, rav4).
+auto(pickup, toyota, tacoma).
+auto(deportivo, toyota, gt86).
+auto(hatchback, toyota, yaris).
+
+auto(sedan, honda, civic).
+auto(suv, honda, crv).
+auto(pickup, honda, ridgeline).
+auto(deportivo, honda, civictypeR).
+auto(hatchback, honda, city).
+
+auto(sedan, mazda, tres).
+auto(suv, mazda, cx90).
+auto(pickup, mazda, bt50).
+auto(deportivo, mazda, mx5).
+auto(hatchback, mazda, dos).
+
+auto(sedan, nissan, versa).
+auto(suv, nissan, xtrail).
+auto(pickup, nissan, frontier).
+auto(deportivo, nissan, gtr).
+auto(hatchback, nissan, march).
+
+auto(sedan, chevrolet, civic).
+auto(suv, chevrolet, blazer).
+auto(pickup, chevrolet, s10).
+auto(deportivo, chevrolet, camaro).
+auto(hatchback, chevrolet, aveo).    
+
+elizaFindAuto( R):- findall(Tipo, (auto(Tipo, _, _)), ListaTipos), list_to_set(ListaTipos, TiposUnicos),
+                    R = ['Claro', que, tipo, de, auto, es, TiposUnicos].
+
+
+elizaFindMarca(X,R) :- 
+    findall(Marca, (auto(_, Marca, _)), ListaMarcas), 
+    list_to_set(ListaMarcas, MarcasUnicas),
+    R = ['Y', que, marca, de, auto, es, MarcasUnicas, escribe, el, tipo,tambien].
+
+elizaFindAutoFinal(Marca, Tipo, R) :- 
+    (auto(Tipo, Marca, Modelo) -> 
+        R = ['Encontre tu auto:', Modelo]
+    ;
+        R = ['Lo siento, no encontré un auto que coincida con tu búsqueda.']).
+
 
 
 template(_, ['Please', explain, a, little, more, '.'], []). 
@@ -322,6 +374,22 @@ replace0([I|_], Input, _, Resp, R) :-
     nth0(I, Input, Atom),
     Resp = [flagcousins | _], findall(X, primos(Atom, X), R), !.
 	
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),
+    nth0(0, Resp, X),  
+    X == flagFindAuto,
+    elizaFindAuto(R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),
+    nth0(0, Resp, X),
+    X == flagFindMarca,
+    elizaFindMarca(Atom,R).
+
+replace0([I|_], [Marca, Tipo], _, Resp, R):- 
+    nth0(I, Resp, X),
+    X == flagFindAutoFinal,         % Verifica si la bandera es flagFindAutoFinal
+    elizaFindAutoFinal(Marca, Tipo, R).
 
 replace0([I|Index], Input, N, Resp, R):-
 	length(Index, M), M =:= 0,
