@@ -99,8 +99,22 @@ template([quien, es, el, padre, de, s(_)], [flagfather], [5]).
 template([quien, es, la, madre, de, s(_)], [flagmother], [5]).
 template([quienes, son, los, hermanos, de, s(_)], [flagsiblings], [5]).
 template([quienes, son, los, primos, de, s(_)], [flagcousins], [5]).
+template([quien, es, el, abuelo, de, s(_)], [flaggrandfather], [5]).
+template([quien, es, la, abuela, de, s(_)], [flaggrandmother], [5]).
+template([quienes, son, los, tios, de, s(_)], [flaguncles], [5]).
+template([quienes, son, las, tias, de, s(_)], [flagaunts], [5]).
+template([quienes, son, los, nietos, de, s(_)], [flaggrandsons], [5]).
+template([quienes, son, las, nietas, de, s(_)], [flaggranddaughters], [5]).
+template([quienes, son, los, hijos, de, s(_)], [flagson], [5]).
+template([quienes, son, las, hijas, de, s(_)], [flagdaughter], [5]).
 
 template([quiero, encontrar, un, auto], [flagFindAuto], [3]).
+template([que, marcas, producen, autos, deportivos], [flagFindDeportivos], [4]).
+template([que, autos, mazda, hay, disponibles], [flagFindMazda], [4]).
+template([que, autos, toyota, hay, disponibles], [flagFindToyota], [4]).
+template([que, autos, honda, hay, disponibles], [flagFindHonda], [4]).
+template([que, autos, nissan, hay, disponibles], [flagFindNissan], [4]).
+template([que, autos, chevrolet, hay, disponibles], [flagFindChevrolet], [4]).
 template([Marca, [s(Tipos)]], [flagFindAutoFinal], [0]).
 template([s(Tipos)], [flagFindMarca], [0]).
 
@@ -135,18 +149,69 @@ madre(blanca, paola).
 madre(blanca, karina).
 esposos(francisco, paola).
 esposos(edy, karina).
+esposo(francisco, paola).
+esposo(edy, karina).
+esposa(paola,francisco).
+esposa(karina,edy).
 
 
 % Reglas
+abuelo(X, Y) :- padre(X, Z), padres(Z, Y).
+abuela(X, Y) :- madre(X, Z), padres(Z, Y).
 hermanos(X, Y) :- (padre(Z, X), padre(Z, Y); madre(W, X), madre(W, Y)), X \= Y.
 primos(X, Y) :- padres(A, X), padres(B, Y), hermanos(A, B).
 padres(X, Y) :- padre(X, Y); madre(X, Y).
+cunado(X, Y) :- esposos(X, Z), hermanos(Z, Y). 
+cunado(X, Y) :- esposos(Y, Z), hermanos(Z, X). 
+tio(X, Y) :- hermanos(X, Z), padres(Z, Y), hombre(X).          
+tio(X, Y) :- esposos(X, W), tia(W, Y).                         
+tia(X, Y) :- hermanos(X, Z), padres(Z, Y), mujer(X).           
+tia(X, Y) :- esposos(X, W), tio(W, Y).   
+sobrino(X, Y) :- tio(Y, X), hombre(X).
+sobrino(X, Y) :- tia(Y, X), hombre(X).
+sobrina(X, Y) :- tio(Y, X), mujer(X).
+sobrina(X, Y) :- tia(Y, X), mujer(X).
+nieto(X, Y) :- abuelo(Y, X), hombre(X).
+nieto(X, Y) :- abuela(Y, X), hombre(X).
+nieta(X, Y) :- abuelo(Y, X), mujer(X).
+nieta(X, Y) :- abuela(Y, X), mujer(X).
+hijo(X, Y) :- padre(Y, X), hombre(X).
+hijo(X, Y) :- madre(Y, X), hombre(X).
+hija(X, Y) :- padre(Y, X), mujer(X).
+hija(X, Y) :- madre(Y, X), mujer(X).
 
 % Respuestas específicas
 respuesta(flagfather, [S], R) :- padre(R, S).
 respuesta(flagmother, [S], R) :- madre(R, S).
 respuesta(flagsiblings, [S], R) :- findall(X, hermanos(S, X), R).
 respuesta(flagcousins, [S], R) :- findall(X, primos(S, X), R).
+respuesta(flaggrandfather, [S], R) :- abuelo(R, S).
+respuesta(flaggrandmother, [S], R) :- abuela(R, S).
+respuesta(flaguncles, [S], R) :- findall(X, tio(X, S), R).
+respuesta(flagaunts, [S], R) :- findall(X, tia(X, S), R).
+respuesta(flaggrandsons, [S], R) :- findall(X, nieto(X, S), R).
+respuesta(flaggranddaughters, [S], R) :- findall(X, nieta(X, S), R).
+respuesta(flagson, [S], R) :- hijo(S, R).
+respuesta(flagdaughter, [S], R) :- hija(S, R).
+
+
+% Bandera: Hijos (son)
+flagson(Person, Son) :-
+    hijo(Person, Son).
+
+% Bandera: Hijas (daughter)
+flagdaughter(Person, Daughter) :-
+    hija(Person, Daughter).
+
+% Derivar hijo/hija a partir de padre/madre
+hijo(PadreOMadre, Hijo) :-
+    padre(PadreOMadre, Hijo), hombre(Hijo).
+hijo(PadreOMadre, Hijo) :-
+    madre(PadreOMadre, Hijo), hombre(Hijo).
+hija(PadreOMadre, Hija) :-
+    padre(PadreOMadre, Hija), mujer(Hija).
+hija(PadreOMadre, Hija) :-
+    madre(PadreOMadre, Hija), mujer(Hija).
 
 % Hechos sobre los autos
 auto(sedan, toyota, camry).
@@ -182,6 +247,23 @@ auto(hatchback, chevrolet, aveo).
 elizaFindAuto( R):- findall(Tipo, (auto(Tipo, _, _)), ListaTipos), list_to_set(ListaTipos, TiposUnicos),
                     R = ['Claro', que, tipo, de, auto, es, TiposUnicos].
 
+elizaFindDeportivos( R):- findall([Marca, Modelo], auto(deportivo, Marca, Modelo), Deportivos),
+                    R = ['Claro',  estos, son, los, autos, deportivos, Deportivos].
+
+elizaFindMazda( R):- findall(Modelo, auto(_, mazda, Modelo), Mazdas),
+                    R = ['Claro',  estos, son, los, autos, mazda, Mazdas].
+                
+elizaFindToyota( R):- findall(Modelo, auto(_, toyota, Modelo), Toyotas),
+                    R = ['Claro',  estos, son, los, autos, toyota, Toyotas].
+
+elizaFindHonda( R):- findall(Modelo, auto(_, honda, Modelo), Hondas),
+                    R = ['Claro',  estos, son, los, autos, honda, Hondas].
+
+elizaFindNissan( R):- findall(Modelo, auto(_, nissan, Modelo), Nissans),
+                    R = ['Claro',  estos, son, los, autos, nissan, Nissans].
+
+elizaFindChevrolet( R):- findall(Modelo, auto(_, chevrolet, Modelo), Chevrolets),
+                    R = ['Claro',  estos, son, los, autos, chevrolet, Chevrolets].
 
 elizaFindMarca(X,R) :- 
     findall(Marca, (auto(_, Marca, _)), ListaMarcas), 
@@ -319,34 +401,34 @@ replace0([I|_], Input, _, Resp, R):-
 
 % Manejo específico para flagfather
 replace0([I|_], Input, _, Resp, R) :-
-    nth0(I, Input, Atom), % Obtén el nombre de la persona
-    Resp = [flagfather | _], % Verifica que sea la bandera correcta
+    nth0(I, Input, Atom),
+    Resp = [flagfather | _], 
     ( padre(Padre, Atom) -> 
         format(atom(R), 'El padre de ~w es ~w.', [Atom, Padre]) % Respuesta formateada
     ; 
-        format(atom(R), 'Lo siento, no sé quién es el padre de ~w.', [Atom]) % Caso donde no hay datos
+        format(atom(R), 'Lo siento, no se quien es el padre de ~w.', [Atom]) % Caso donde no hay datos
     ), !.
 
 % Manejo específico para flagmother
 replace0([I|_], Input, _, Resp, R) :-
-    nth0(I, Input, Atom), % Obtén el nombre de la persona
-    Resp = [flagmother | _], % Verifica que sea la bandera correcta
-    ( madre(Madre, Atom) -> 
+    nth0(I, Input, Atom), 
+    Resp = [flagmother | _],
+     ( madre(Madre, Atom) -> 
         format(atom(R), 'La madre de ~w es ~w.', [Atom, Madre]) % Respuesta formateada
     ; 
-        format(atom(R), 'Lo siento, no sé quién es la madre de ~w.', [Atom]) % Caso donde no hay datos
+        format(atom(R), 'Lo siento, no se quien es la madre de ~w.', [Atom]) % Caso donde no hay datos
     ), !.
 
 % Manejo específico para hermanos
 replace0([I|_], Input, _, Resp, R) :-
     nth0(I, Input, Atom), % Obtén el nombre de la persona
-    Resp = [flagsiblings | _], % Verifica que sea la bandera correcta
+    Resp = [flagsiblings | _], 
     findall(Hermano, hermanos(Atom, Hermano), ListaHermanos), % Obtén todos los hermanos
     ( ListaHermanos \= [] -> 
         atomic_list_concat(ListaHermanos, ', ', ListaHermanosStr), % Convierte la lista a cadena
         format(atom(R), 'Los hermanos de ~w son: ~w.', [Atom, ListaHermanosStr]) % Respuesta formateada
     ; 
-        format(atom(R), 'Lo siento, no sé quiénes son los hermanos de ~w.', [Atom]) % Caso donde no hay datos
+        format(atom(R), 'Lo siento, no se quienes son los hermanos de ~w.', [Atom]) % Caso donde no hay datos
     ), !.
 
 % Manejo específico para primos
@@ -359,6 +441,135 @@ replace0([I|_], Input, _, Resp, R) :-
         format(atom(R), 'Los primos de ~w son: ~w.', [Atom, ListaPrimosStr]) % Respuesta formateada
     ; 
         format(atom(R), 'Lo siento, no sé quiénes son los primos de ~w.', [Atom]) % Caso donde no hay datos
+    ), !.
+
+% Manejo específico para cada relación
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flaggrandfather | _],
+    ( abuelo(Abuelo, Atom) ->
+        format(atom(R), 'El abuelo de ~w es ~w.', [Atom, Abuelo])
+    ;
+        format(atom(R), 'Lo siento, no se quien es el abuelo de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flaggrandmother | _],
+    ( abuela(Abuela, Atom) ->
+        format(atom(R), 'La abuela de ~w es ~w.', [Atom, Abuela])
+    ;
+        format(atom(R), 'Lo siento, no se quien es la abuela de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flaguncles | _],
+    findall(Tio, tio(Tio, Atom), ListaTios),
+    ( ListaTios \= [] ->
+        atomic_list_concat(ListaTios, ', ', ListaTiosStr),
+        format(atom(R), 'Los tios de ~w son: ~w.', [Atom, ListaTiosStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son los tios de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagaunts | _],
+    findall(Tia, tia(Tia, Atom), ListaTias),
+    ( ListaTias \= [] ->
+        atomic_list_concat(ListaTias, ', ', ListaTiasStr),
+        format(atom(R), 'Las tias de ~w son: ~w.', [Atom, ListaTiasStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son las tias de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flaggrandsons | _],
+    findall(Nieto, nieto(Nieto, Atom), ListaNietos),
+    ( ListaNietos \= [] ->
+        atomic_list_concat(ListaNietos, ', ', ListaNietosStr),
+        format(atom(R), 'Los nietos de ~w son: ~w.', [Atom, ListaNietosStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son los nietos de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flaggranddaughters | _],
+    findall(Nieta, nieta(Nieta, Atom), ListaNietas),
+    ( ListaNietas \= [] ->
+        atomic_list_concat(ListaNietas, ', ', ListaNietasStr),
+        format(atom(R), 'Las nietas de ~w son: ~w.', [Atom, ListaNietasStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son las nietas de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagbrotherinlaw | _],
+    findall(BrotherInLaw, flagbrotherinlaw(Atom, BrotherInLaw), ListaHermanosPoliticos),
+    ( ListaHermanosPoliticos \= [] ->
+        atomic_list_concat(ListaHermanosPoliticos, ', ', ListaHermanosPoliticosStr),
+        format(atom(R), 'Los hermanos políticos de ~w son: ~w.', [Atom, ListaHermanosPoliticosStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son los hermanos políticos de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagsisterinlaw | _],
+    findall(SisterInLaw, flagsisterinlaw(Atom, SisterInLaw), ListaHermanasPoliticas),
+    ( ListaHermanasPoliticas \= [] ->
+        atomic_list_concat(ListaHermanasPoliticas, ', ', ListaHermanasPoliticasStr),
+        format(atom(R), 'Las hermanas políticas de ~w son: ~w.', [Atom, ListaHermanasPoliticasStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son las hermanas políticas de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagnephews | _],
+    findall(Nephew, flagnephews(Atom, Nephew), ListaSobrinos),
+    ( ListaSobrinos \= [] ->
+        atomic_list_concat(ListaSobrinos, ', ', ListaSobrinosStr),
+        format(atom(R), 'Los sobrinos de ~w son: ~w.', [Atom, ListaSobrinosStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son los sobrinos de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagnieces | _],
+    findall(Niece, flagnieces(Atom, Niece), ListaSobrinas),
+    ( ListaSobrinas \= [] ->
+        atomic_list_concat(ListaSobrinas, ', ', ListaSobrinasStr),
+        format(atom(R), 'Las sobrinas de ~w son: ~w.', [Atom, ListaSobrinasStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son las sobrinas de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagson | _],
+    findall(Son, flagson(Atom, Son), ListaHijos),
+    ( ListaHijos \= [] ->
+        atomic_list_concat(ListaHijos, ', ', ListaHijosStr),
+        format(atom(R), 'Los hijos de ~w son: ~w.', [Atom, ListaHijosStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son los hijos de ~w.', [Atom])
+    ), !.
+
+replace0([I|_], Input, _, Resp, R) :-
+    nth0(I, Input, Atom),
+    Resp = [flagdaughter | _],
+    findall(Daughter, flagdaughter(Atom, Daughter), ListaHijas),
+    ( ListaHijas \= [] ->
+        atomic_list_concat(ListaHijas, ', ', ListaHijasStr),
+        format(atom(R), 'Las hijas de ~w son: ~w.', [Atom, ListaHijasStr])
+    ;
+        format(atom(R), 'Lo siento, no se quienes son las hijas de ~w.', [Atom])
     ), !.
 
 
@@ -379,6 +590,42 @@ replace0([I|_], Input, _, Resp, R):-
     nth0(0, Resp, X),  
     X == flagFindAuto,
     elizaFindAuto(R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),
+    nth0(0, Resp, X),  
+    X == flagFindDeportivos,
+    elizaFindDeportivos(R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),
+    nth0(0, Resp, X),  
+    X == flagFindMazda,
+    elizaFindMazda(R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),
+    nth0(0, Resp, X),  
+    X == flagFindToyota,
+    elizaFindToyota(R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),
+    nth0(0, Resp, X),  
+    X == flagFindHonda,
+    elizaFindHonda(R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),
+    nth0(0, Resp, X),  
+    X == flagFindNissan,
+    elizaFindNissan(R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Atom),
+    nth0(0, Resp, X),  
+    X == flagFindChevrolet,
+    elizaFindChevrolet(R).
 
 replace0([I|_], Input, _, Resp, R):- 
     nth0(I, Input, Atom),
