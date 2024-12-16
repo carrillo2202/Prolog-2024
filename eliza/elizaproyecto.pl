@@ -123,7 +123,11 @@ template([que, autos, honda, hay, disponibles], [flagFindHonda], [4]).
 template([que, autos, nissan, hay, disponibles], [flagFindNissan], [4]).
 template([que, autos, chevrolet, hay, disponibles], [flagFindChevrolet], [4]).
 template([Marca, [s(Tipos)]], [flagFindAutoFinal], [0]).
-template([s(Tipos)], [flagFindMarca], [0]).
+template([sedan], [flagFindMarca], [0]).
+template([suv], [flagFindMarca], [0]).
+template([pickup], [flagFindMarca], [0]).
+template([deportivo], [flagFindMarca], [0]).
+template([hatchbakc], [flagFindMarca], [0]).
 
 template(_, ['No entiendo tu consulta. Por favor, intenta nuevamente.'], []).
 
@@ -706,11 +710,8 @@ replace0([I|_], [Marca, Tipo], _, Resp, R):-
     elizaFindAutoFinal(Marca, Tipo, R).
 
 replace0([I|_], Input, _, Resp, R):- 
-    write('Input recibido: '), write(Input), nl,
     nth0(I, Input, Atom),
-     write('Atom: '), write(Atom), nl,
-    nth0(0, Resp, X),  
-    write('Resp: '), write(Resp), nl, 
+    nth0(0, Resp, X),   
     X == flagResolveProblem,
     elizaResolveProblem(R).
 
