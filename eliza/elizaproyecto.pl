@@ -1,7 +1,7 @@
 
 eliza:-	writeln('Hola , mi nombre es  Eliza tu  chatbot,
 	por favor ingresa tu consulta,
-	usar solo minúsculas sin . al final:'),
+	usar solo minusculas sin . al final:'),
 	readln(Input),
 	eliza(Input),!.
 eliza(Input):- Input == ['Adios'],
@@ -11,7 +11,7 @@ eliza(Input):- Input == ['Adios', '.'],
 eliza(Input) :-
 	template(Stim, Resp, IndStim),
 	match(Stim, Input),
-	% si he llegado aquí es que he
+	% si he llegado aqui es que he
 	% hallado el template correcto:
 	replace0(IndStim, Input, 0, Resp, R),
 	writeln(R),
@@ -23,7 +23,7 @@ eliza(Input) :-
     match(Stim, Input),
     replace0(IndStim, Input, 0, Resp, R),
     writeln(R), % Mostrar respuesta correctamente
-    !. % Termina después de procesar una consulta válida
+    !. % Termina despues de procesar una consulta valida
 
 process_input(Input) :-
     (   
@@ -108,6 +108,13 @@ template([quienes, son, las, nietas, de, s(_)], [flaggranddaughters], [5]).
 template([quienes, son, los, hijos, de, s(_)], [flagson], [5]).
 template([quienes, son, las, hijas, de, s(_)], [flagdaughter], [5]).
 
+template([resuelve, el, problema, de, los, medicos], [flagResolveProblem], [5]).
+template([cual, es, la, especialidad, de, s(Nombre)], [flagFindEspecialidadMedico], [5]).
+template([cual, es, el, hospital, de, s(Nombre)], [flagFindHospitalMedico], [5]).
+template([cual, es, el, equipo, medico, de, s(Nombre)], [flagFindEquipoMedico], [6]).
+template([cual, es, el, interes, de, investigacion, de, s(Nombre)], [flagFindInteresInvestigacion], [7]).
+
+
 template([quiero, encontrar, un, auto], [flagFindAuto], [3]).
 template([que, marcas, producen, autos, deportivos], [flagFindDeportivos], [4]).
 template([que, autos, mazda, hay, disponibles], [flagFindMazda], [4]).
@@ -180,7 +187,7 @@ hijo(X, Y) :- madre(Y, X), hombre(X).
 hija(X, Y) :- padre(Y, X), mujer(X).
 hija(X, Y) :- madre(Y, X), mujer(X).
 
-% Respuestas específicas
+% Respuestas especificas
 respuesta(flagfather, [S], R) :- padre(R, S).
 respuesta(flagmother, [S], R) :- madre(R, S).
 respuesta(flagsiblings, [S], R) :- findall(X, hermanos(S, X), R).
@@ -274,7 +281,110 @@ elizaFindAutoFinal(Marca, Tipo, R) :-
     (auto(Tipo, Marca, Modelo) -> 
         R = ['Encontre tu auto:', Modelo]
     ;
-        R = ['Lo siento, no encontré un auto que coincida con tu búsqueda.']).
+        R = ['Lo siento, no encontre un auto que coincida con tu busqueda.']).
+
+elizaResolveProblem( R) :- resolver(Resultado),
+                           R = ['Claro',  asi, se, organiza, el, hospital, Resultado].
+
+
+% Problema de hospital
+
+% Hechos y posibles opciones
+medico(ana).
+medico(bruno).
+medico(carla).
+medico(diego).
+medico(elena).
+
+especialidad(cardiologia).
+especialidad(neurologia).
+especialidad(oncologia).
+especialidad(pediatria).
+especialidad(dermatologia).
+
+hospital(general).
+hospital(regional).
+hospital(universitario).
+hospital(privado).
+hospital(militar).
+
+equipo(ecografo).
+equipo(resonancia).
+equipo(tomografo).
+equipo(dermatoscopio).
+equipo(electrocardiografo).
+
+interes(genetica).
+interes(farmacologia).
+interes(inmunologia).
+interes(bioetica).
+interes(microbiologia).
+
+% Solucion del problema
+resolver(Resultado) :-
+    % Creamos una lista de medicos con sus atributos
+    Resultado = [
+        [ana, EspecialidadAna, HospitalAna, EquipoAna, InteresAna],
+        [bruno, EspecialidadBruno, HospitalBruno, EquipoBruno, InteresBruno],
+        [carla, EspecialidadCarla, HospitalCarla, EquipoCarla, InteresCarla],
+        [diego, EspecialidadDiego, HospitalDiego, EquipoDiego, InteresDiego],
+        [elena, EspecialidadElena, HospitalElena, EquipoElena, InteresElena]
+    ],
+    
+    % Valores unicos para cada atributo
+    especialidad(EspecialidadAna), especialidad(EspecialidadBruno), especialidad(EspecialidadCarla), especialidad(EspecialidadDiego), especialidad(EspecialidadElena),
+    all_different([EspecialidadAna, EspecialidadBruno, EspecialidadCarla, EspecialidadDiego, EspecialidadElena]),
+
+    hospital(HospitalAna), hospital(HospitalBruno), hospital(HospitalCarla), hospital(HospitalDiego), hospital(HospitalElena),
+    all_different([HospitalAna, HospitalBruno, HospitalCarla, HospitalDiego, HospitalElena]),
+
+    equipo(EquipoAna), equipo(EquipoBruno), equipo(EquipoCarla), equipo(EquipoDiego), equipo(EquipoElena),
+    all_different([EquipoAna, EquipoBruno, EquipoCarla, EquipoDiego, EquipoElena]),
+
+    interes(InteresAna), interes(InteresBruno), interes(InteresCarla), interes(InteresDiego), interes(InteresElena),
+    all_different([InteresAna, InteresBruno, InteresCarla, InteresDiego, InteresElena]),
+
+    % Restricciones dadas por el enunciado:
+    % 1. Carla no trabaja en el Hospital General ni en el Privado, y no estudia neurologia.
+    HospitalCarla \= general, HospitalCarla \= privado, EspecialidadCarla \= neurologia,
+
+    % 2. La persona que utiliza el electrocardiografo trabaja en cardiologia en el Hospital Militar, pero no es Diego.
+    member([_, cardiologia, militar, electrocardiografo, _], Resultado),
+    not(member([diego, cardiologia, militar, electrocardiografo, _], Resultado)),
+
+    % 3. Bruno esta interesado en farmacologia, pero no trabaja en el Hospital Regional ni en el Militar.
+    InteresBruno = farmacologia, HospitalBruno \= regional, HospitalBruno \= militar,
+
+    % 4. La persona que utiliza el ecografo trabaja en pediatria y no es del Hospital Universitario ni del Militar.
+    member([_, pediatria, HospitalPediatria, ecografo, _], Resultado), HospitalPediatria \= universitario, HospitalPediatria \= militar,
+
+    % 5. El especialista en oncologia trabaja en el Hospital General y utiliza un tomografo.
+    member([_, oncologia, general, tomografo, _], Resultado),
+
+    % 6. El medico interesado en inmunologia usa el resonador magnetico, pero no es Elena.
+    member([_, _, _, resonancia, inmunologia], Resultado), not(member([elena, _, _, resonancia, inmunologia], Resultado)),
+
+    % 7. El medico del Hospital Regional se dedica a dermatologia.
+    member([_, dermatologia, regional, _, _], Resultado),
+
+    % 8. Elena esta interesada en bioetica y no utiliza el electrocardiografo.
+    InteresElena = bioetica, EquipoElena \= electrocardiografo,
+
+    % 9. Diego es el experto en microbiologia.
+    InteresDiego = microbiologia,
+
+    % 10. El medico del Hospital Universitario utiliza un dermatoscopio.
+    member([_, _, universitario, dermatoscopio, _], Resultado).
+
+% Predicado para asegurar valores unicos en una lista
+all_different([]).
+all_different([H|T]) :- not(member(H, T)), all_different(T).
+
+elizaFindHospitalMedico(Nombre, R) :-
+    (medico(Nombre, _, Hospital, _, _) ->
+        R = ['El hospital de', Nombre, 'es', Hospital]
+    ;
+        R = ['Lo siento, no encontre informacion para el medico llamado', Nombre]).
 
 
 
@@ -312,7 +422,7 @@ is0(fine).
 is0(happy).
 is0(redundant).
 
-% Predicado para responder dónde vive Eliza
+% Predicado para responder donde vive Eliza
 elizaLives(X, R):- livesIn(X), R = ['Yes', yo, vivo, en, X].
 elizaLives(X, R):- \+livesIn(X), R = ['No', yo, no, vivo, en, X].
 livesIn(puruandiro).
@@ -341,7 +451,7 @@ match([S|Stim],[I|Input]) :-
 	match(Stim, Input),!.
 
 match([S|Stim],[_|Input]) :-
-% I es un s(X), lo ignoro y continúo con el resto de la lista
+% I es un s(X), lo ignoro y continuo con el resto de la lista
 	\+atom(S),
 	match(Stim, Input),!.
 
@@ -359,7 +469,7 @@ replace0([I|_], Input, _, Resp, R):-
 % Reemplazo en la respuesta
 replace0([], _, _, Resp, Resp).
 replace0([I|_], Input, _, Resp, R) :-
-    nth0(I, Input, _), % No es relevante el contenido del token aquí
+    nth0(I, Input, _), % No es relevante el contenido del token aqui
     Resp = [flagLikesNew | _],
     elizaLikesNew(_, R), !.
 
@@ -399,7 +509,7 @@ replace0([I|_], Input, _, Resp, R):-
 	X == flagVisit,
 	elizaVisit(Atom, R).
 
-% Manejo específico para flagfather
+% Manejo especifico para flagfather
 replace0([I|_], Input, _, Resp, R) :-
     nth0(I, Input, Atom),
     Resp = [flagfather | _], 
@@ -409,7 +519,7 @@ replace0([I|_], Input, _, Resp, R) :-
         format(atom(R), 'Lo siento, no se quien es el padre de ~w.', [Atom]) % Caso donde no hay datos
     ), !.
 
-% Manejo específico para flagmother
+% Manejo especifico para flagmother
 replace0([I|_], Input, _, Resp, R) :-
     nth0(I, Input, Atom), 
     Resp = [flagmother | _],
@@ -419,11 +529,11 @@ replace0([I|_], Input, _, Resp, R) :-
         format(atom(R), 'Lo siento, no se quien es la madre de ~w.', [Atom]) % Caso donde no hay datos
     ), !.
 
-% Manejo específico para hermanos
+% Manejo especifico para hermanos
 replace0([I|_], Input, _, Resp, R) :-
-    nth0(I, Input, Atom), % Obtén el nombre de la persona
+    nth0(I, Input, Atom), % Obten el nombre de la persona
     Resp = [flagsiblings | _], 
-    findall(Hermano, hermanos(Atom, Hermano), ListaHermanos), % Obtén todos los hermanos
+    findall(Hermano, hermanos(Atom, Hermano), ListaHermanos), % Obten todos los hermanos
     ( ListaHermanos \= [] -> 
         atomic_list_concat(ListaHermanos, ', ', ListaHermanosStr), % Convierte la lista a cadena
         format(atom(R), 'Los hermanos de ~w son: ~w.', [Atom, ListaHermanosStr]) % Respuesta formateada
@@ -431,19 +541,19 @@ replace0([I|_], Input, _, Resp, R) :-
         format(atom(R), 'Lo siento, no se quienes son los hermanos de ~w.', [Atom]) % Caso donde no hay datos
     ), !.
 
-% Manejo específico para primos
+% Manejo especifico para primos
 replace0([I|_], Input, _, Resp, R) :-
-    nth0(I, Input, Atom), % Obtén el nombre de la persona
+    nth0(I, Input, Atom), % Obten el nombre de la persona
     Resp = [flagcousins | _], % Verifica que sea la bandera correcta
-    findall(Primo, primos(Atom, Primo), ListaPrimos), % Obtén todos los primos
+    findall(Primo, primos(Atom, Primo), ListaPrimos), % Obten todos los primos
     ( ListaPrimos \= [] -> 
         atomic_list_concat(ListaPrimos, ', ', ListaPrimosStr), % Convierte la lista a cadena
         format(atom(R), 'Los primos de ~w son: ~w.', [Atom, ListaPrimosStr]) % Respuesta formateada
     ; 
-        format(atom(R), 'Lo siento, no sé quiénes son los primos de ~w.', [Atom]) % Caso donde no hay datos
+        format(atom(R), 'Lo siento, no se quienes son los primos de ~w.', [Atom]) % Caso donde no hay datos
     ), !.
 
-% Manejo específico para cada relación
+% Manejo especifico para cada relacion
 replace0([I|_], Input, _, Resp, R) :-
     nth0(I, Input, Atom),
     Resp = [flaggrandfather | _],
@@ -506,49 +616,6 @@ replace0([I|_], Input, _, Resp, R) :-
         format(atom(R), 'Lo siento, no se quienes son las nietas de ~w.', [Atom])
     ), !.
 
-replace0([I|_], Input, _, Resp, R) :-
-    nth0(I, Input, Atom),
-    Resp = [flagbrotherinlaw | _],
-    findall(BrotherInLaw, flagbrotherinlaw(Atom, BrotherInLaw), ListaHermanosPoliticos),
-    ( ListaHermanosPoliticos \= [] ->
-        atomic_list_concat(ListaHermanosPoliticos, ', ', ListaHermanosPoliticosStr),
-        format(atom(R), 'Los hermanos políticos de ~w son: ~w.', [Atom, ListaHermanosPoliticosStr])
-    ;
-        format(atom(R), 'Lo siento, no se quienes son los hermanos políticos de ~w.', [Atom])
-    ), !.
-
-replace0([I|_], Input, _, Resp, R) :-
-    nth0(I, Input, Atom),
-    Resp = [flagsisterinlaw | _],
-    findall(SisterInLaw, flagsisterinlaw(Atom, SisterInLaw), ListaHermanasPoliticas),
-    ( ListaHermanasPoliticas \= [] ->
-        atomic_list_concat(ListaHermanasPoliticas, ', ', ListaHermanasPoliticasStr),
-        format(atom(R), 'Las hermanas políticas de ~w son: ~w.', [Atom, ListaHermanasPoliticasStr])
-    ;
-        format(atom(R), 'Lo siento, no se quienes son las hermanas políticas de ~w.', [Atom])
-    ), !.
-
-replace0([I|_], Input, _, Resp, R) :-
-    nth0(I, Input, Atom),
-    Resp = [flagnephews | _],
-    findall(Nephew, flagnephews(Atom, Nephew), ListaSobrinos),
-    ( ListaSobrinos \= [] ->
-        atomic_list_concat(ListaSobrinos, ', ', ListaSobrinosStr),
-        format(atom(R), 'Los sobrinos de ~w son: ~w.', [Atom, ListaSobrinosStr])
-    ;
-        format(atom(R), 'Lo siento, no se quienes son los sobrinos de ~w.', [Atom])
-    ), !.
-
-replace0([I|_], Input, _, Resp, R) :-
-    nth0(I, Input, Atom),
-    Resp = [flagnieces | _],
-    findall(Niece, flagnieces(Atom, Niece), ListaSobrinas),
-    ( ListaSobrinas \= [] ->
-        atomic_list_concat(ListaSobrinas, ', ', ListaSobrinasStr),
-        format(atom(R), 'Las sobrinas de ~w son: ~w.', [Atom, ListaSobrinasStr])
-    ;
-        format(atom(R), 'Lo siento, no se quienes son las sobrinas de ~w.', [Atom])
-    ), !.
 
 replace0([I|_], Input, _, Resp, R) :-
     nth0(I, Input, Atom),
@@ -635,8 +702,70 @@ replace0([I|_], Input, _, Resp, R):-
 
 replace0([I|_], [Marca, Tipo], _, Resp, R):- 
     nth0(I, Resp, X),
-    X == flagFindAutoFinal,         % Verifica si la bandera es flagFindAutoFinal
+    X == flagFindAutoFinal,        
     elizaFindAutoFinal(Marca, Tipo, R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    write('Input recibido: '), write(Input), nl,
+    nth0(I, Input, Atom),
+     write('Atom: '), write(Atom), nl,
+    nth0(0, Resp, X),  
+    write('Resp: '), write(Resp), nl, 
+    X == flagResolveProblem,
+    elizaResolveProblem(R).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Nombre),  
+    nth0(0, Resp, X), 
+    X == flagFindHospitalMedico,  
+    resolver(Resultado),          
+    (member([Nombre, _, Hospital, _, _], Resultado) -> 
+        R = ['El hospital de', Nombre, 'es', Hospital]
+    ;
+        R = ['Lo siento, no encontre informacion para el medico llamado', Nombre]).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Nombre),  
+    nth0(0, Resp, X), 
+    X == flagFindEspecialidadMedico,  
+    resolver(Resultado),             
+    (member([Nombre, Especialidad, _, _, _], Resultado) -> 
+        R = ['La especialidad de', Nombre, 'es', Especialidad]
+    ;   
+        R = ['Lo siento, no encontre informacion sobre', Nombre]).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Nombre),
+    nth0(0, Resp, X),
+    X == flagFindHospitalMedico, 
+    resolver(Resultado),              
+    (member([Nombre, _, Hospital, _, _], Resultado) -> 
+        R = ['El hospital de', Nombre, 'es', Hospital]
+    ;   
+        R = ['Lo siento, no encontre informacion sobre', Nombre]).
+
+% Encuentra el equipo medico del medico
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Nombre),
+    nth0(0, Resp, X), 
+    X == flagFindEquipoMedico, 
+    resolver(Resultado),              
+    (member([Nombre, _, _, Equipo, _], Resultado) -> 
+        R = ['El equipo medico de', Nombre, 'es', Equipo]
+    ;   
+        R = ['Lo siento, no encontre informacion sobre', Nombre]).
+
+replace0([I|_], Input, _, Resp, R):- 
+    nth0(I, Input, Nombre),
+    nth0(0, Resp, X), 
+    X == flagFindInteresInvestigacion, 
+    resolver(Resultado),              
+    (member([Nombre, _, _, _, Interes], Resultado) -> 
+        R = ['El interes de investigacion de', Nombre, 'es', Interes]
+    ;   
+        R = ['Lo siento, no encontre informacion sobre', Nombre]).
+
+
 
 replace0([I|Index], Input, N, Resp, R):-
 	length(Index, M), M =:= 0,
